@@ -22,14 +22,11 @@ class StripePaymentService {
       required String destination}) async {
     try {
       // 1. Create a payment intent on the server
-      final response = await http.post(
-          Uri.parse(
-              'https://us-central1-utm-let-go.cloudfunctions.net/stripePaymentIntentToConnectedAccountRequest'),
-          body: {
-            'email': email,
-            'amount': (amount * 100).toString(),
-            'destination': destination
-          });
+      final response = await http.post(Uri.parse(''), body: {
+        'email': email,
+        'amount': (amount * 100).toString(),
+        'destination': destination
+      });
 
       final jsonResponse = jsonDecode(response.body);
       log(jsonResponse.toString());
@@ -71,9 +68,7 @@ class StripePaymentService {
       String email, String documentID) async {
     try {
       // 1. Create a payment intent on the server
-      final response = await http.post(
-          Uri.parse(
-              'https://us-central1-utm-let-go.cloudfunctions.net/createStripeStandardAccount'),
+      final response = await http.post(Uri.parse(''),
           body: {'email': email, "documentID": documentID});
       dynamic res = jsonDecode(response.body);
       if (res['success'] as bool) {
@@ -98,9 +93,7 @@ class StripePaymentService {
   Future<StripeAccount> retrieveStripeAccount(
       String accountId, String documentID) async {
     try {
-      final response = await http.post(
-          Uri.parse(
-              'https://us-central1-utm-let-go.cloudfunctions.net/getStripeStandardAccount'),
+      final response = await http.post(Uri.parse(''),
           body: {'accountID': accountId, 'documentID': documentID});
       dynamic res = jsonDecode(response.body);
       if (res['success'] as bool) {
@@ -122,9 +115,7 @@ class StripePaymentService {
   Stream<StripeAccount> retrieveStripeAccountAsStream(
       String accountId, String documentID) async* {
     try {
-      final response = await http.post(
-          Uri.parse(
-              'https://us-central1-utm-let-go.cloudfunctions.net/getStripeStandardAccount'),
+      final response = await http.post(Uri.parse(''),
           body: {'accountID': accountId, 'documentID': documentID});
       dynamic res = jsonDecode(response.body);
       if (response.statusCode == 200 && res['success'] as bool) {
@@ -146,15 +137,13 @@ class StripePaymentService {
   Future<String> generateOnboardingLink(
       String accountId, String documentID) async {
     try {
-      final response = await http.post(
-          Uri.parse(
-              'https://us-central1-utm-let-go.cloudfunctions.net/generateOnboardingLink'),
+      final response = await http.post(Uri.parse(''),
           body: {'accountID': accountId, 'documentID': documentID});
       dynamic res = jsonDecode(response.body);
       if (res['success'] as bool) {
         return res['link'];
       } else {
-        print(res['error']);
+
         throw GeneralException(
             title: 'Error occured when generating link', message: res['error']);
       }
@@ -163,7 +152,7 @@ class StripePaymentService {
         throw GeneralException(
             title: error.error.code.name, message: error.error.message);
       } else {
-        print(error);
+
         throw GeneralException(
             title: 'Error occured', message: error.toString());
       }
@@ -173,15 +162,13 @@ class StripePaymentService {
   Future<String> generateUpdateAccountLink(
       String accountId, String documentID) async {
     try {
-      final response = await http.post(
-          Uri.parse(
-              'https://us-central1-utm-let-go.cloudfunctions.net/generateUpdateAccountLink'),
+      final response = await http.post(Uri.parse(''),
           body: {'accountID': accountId, 'documentID': documentID});
       dynamic res = jsonDecode(response.body);
       if (res['success'] as bool) {
         return res['link'];
       } else {
-        print(res['error']);
+
         throw GeneralException(title: 'Error occured', message: res['error']);
       }
     } catch (error) {
@@ -189,7 +176,7 @@ class StripePaymentService {
         throw GeneralException(
             title: error.error.code.name, message: error.error.message);
       } else {
-        print(error);
+
         throw GeneralException(
             title: 'Error occured', message: error.toString());
       }

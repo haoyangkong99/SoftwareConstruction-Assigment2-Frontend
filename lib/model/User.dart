@@ -44,7 +44,7 @@ class User extends Account {
       'status': status,
       'campus': campus,
       'contact': contact,
-      'addresses': addresses.map((e) => e.toMap()),
+      'addresses': addresses.map((e) => e.toMap()).toList(),
       'visibility': visibility,
       'profilePicture': profilePicture,
       'userType': userType,
@@ -60,8 +60,7 @@ class User extends Account {
         addressesJson.map((e) => Address.fromMap(e)).toList();
     List<dynamic> itemLinksJson = map['itemLink'];
     List<String> itemLinks = itemLinksJson.map((e) => e.toString()).toList();
-
-    return User.complete(
+    User temp = User.complete(
       map['guid'] as String,
       map['email'] as String,
       map['userType'] as String,
@@ -76,6 +75,8 @@ class User extends Account {
       ReviewsLink.fromMap(map['reviewsLink'] as Map<String, dynamic>),
       itemLinks,
     );
+
+    return temp;
   }
 
   String toJson() => json.encode(toMap());

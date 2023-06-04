@@ -39,7 +39,8 @@ class AuthenticationViewModel extends BaseViewModel {
   }
 
   Future<void> login(String email, String password) async {
-    User? result = await _authService.signIn(email, password);
+    await _authService.signIn(email, password);
+
     dbUser.User currentUser = await _userService.getCurrentUser();
     if (currentUser.visibility == VisibilityType.allow.name) {
       navigateToMainScreen(currentUser);
@@ -48,28 +49,6 @@ class AuthenticationViewModel extends BaseViewModel {
           title: "Your account has been temporarily suspended",
           message:
               "To recover your account, you can send an appeal email to the admin - haoyangkong@gmail.com");
-    }
-  }
-
-  Future<void> loginWithGoogle() async {
-    UserCredential? result = await _authService.googleSignIn();
-    if (await _userService.validateDocumentExist(result.user!.uid)) {
-      dbUser.User user =
-          await _userService.getUserByDocumentId(result.user!.uid);
-      if (user.visibility == VisibilityType.allow.name) {
-        _snackBarService.showSnackbar(message: "signing in");
-        navigateToMainScreen(user);
-      } else {
-        throw GeneralException(
-            title: "Your account has been temporarily suspended",
-            message:
-                "To recover your account, you can send an appeal email to the admin\n email: haoyangkong@gmail.com");
-      }
-    } else {
-      _navigationService.navigateToView(RegisterScreen(
-        isEmailSignUp: false,
-        email: result.user!.email,
-      ));
     }
   }
 

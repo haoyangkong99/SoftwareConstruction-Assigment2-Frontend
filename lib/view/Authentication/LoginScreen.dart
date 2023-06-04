@@ -185,16 +185,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ),
                             ),
-                            SignInButton(
-                                buttonType: ButtonType.google,
-                                onPressed: () {
-                                  model.loginWithGoogle().onError<Exception>(
-                                      (error, stackTrace) =>
-                                          showExceptionErrorDialogBox(
-                                              context,
-                                              error,
-                                              'Error occured when signing in'));
-                                }),
                             SizedBox(
                                 height:
                                     MediaQuery.of(context).size.height * 0.05),

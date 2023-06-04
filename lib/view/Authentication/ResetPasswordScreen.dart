@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:utmletgo/constants/_constants.dart';
+import 'package:utmletgo/shared/Exception.dart';
 import 'package:utmletgo/shared/_shared.dart';
 import 'package:utmletgo/viewmodel/_viewmodel.dart';
 
@@ -95,9 +96,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                       await showCompleteResetPassowrdDialogBox(
                                           context);
                                       model.navigateToLogin();
-                                    }).onError<FirebaseAuthException>((error,
+                                    }).onError<GeneralException>((error,
                                                 stackTrace) =>
-                                            showFirebaseAuthExceptionErrorDialogBox(
+                                            showGeneralExceptionErrorDialogBox(
                                                 context, error));
                                     setState(() {
                                       isLoading = true;

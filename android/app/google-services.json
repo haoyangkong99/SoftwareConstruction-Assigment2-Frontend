@@ -1,51 +1,26 @@
 {
   "project_info": {
-    "project_number": "922580097838",
-    "project_id": "utm-let-go",
-    "storage_bucket": "utm-let-go.appspot.com"
+    "project_number": "1047949998429",
+    "project_id": "softcon-asg2-backend",
+    "storage_bucket": "softcon-asg2-backend.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:922580097838:android:d42485338016b4307e38bf",
+        "mobilesdk_app_id": "1:1047949998429:android:1adaf3c8b2c821bdca50b4",
         "android_client_info": {
           "package_name": "com.example.utmletgo"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "922580097838-hg73kmqn3nljehiip2ihimq1h23j5jbh.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.utmletgo",
-            "certificate_hash": "b19d25952cce88efa94082481ad7cc41f1be5c30"
-          }
-        },
-        {
-          "client_id": "922580097838-7907lbpdo0rlp4r76ik9tae4vppjtchp.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCSZGz6upvtmrPpdsUfTvbSK9OFIRizNt4"
+          "current_key": "AIzaSyB2fLOHdom13E12VcaKM4aOBOZmer4npKI"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "922580097838-7907lbpdo0rlp4r76ik9tae4vppjtchp.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "922580097838-ug93v7fssdr8tc1oi27o8r0c0ss8he58.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.utmletgo"
-              }
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

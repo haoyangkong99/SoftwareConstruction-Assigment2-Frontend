@@ -32,12 +32,12 @@ class _ReviewScreenState extends State<ReviewScreen> {
     return ViewModelBuilder<ReviewsViewModel>.reactive(
         viewModelBuilder: () => ReviewsViewModel(userGuid: widget.sellerGuid),
         builder: (context, model, child) {
-            if (model.dataReady('reviews') &&
+          if (model.dataReady('reviews') &&
               model.dataReady('userList') &&
               model.dataReady('seller') &&
               model.dataReady('orderList') &&
               model.dataReady('itemList')) {
-              User seller = model.dataMap!['seller'];
+            User seller = model.dataMap!['seller'];
             List<Reviews> reviewsList = model.dataMap!['reviews'];
             reviewsList = reviewsList
                 .where((element) =>
@@ -68,7 +68,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
             List<Item> completedItemList = allItemList
                 .where((element) => orderItemGuid.contains(element.guid))
                 .toList();
-            int counter = seller.reviewsLink.reviewsCount;
+            int counter = seller.reviewsLink.reviewsCount.toInt();
 
             double average = seller.reviewsLink.averageRating.isFinite
                 ? seller.reviewsLink.averageRating
@@ -100,107 +100,111 @@ class _ReviewScreenState extends State<ReviewScreen> {
                         ))
                     : null,
                 body: SafeArea(
-                    child: Column(
-                      children: [
-                        seller.reviewsLink.reviewsCount == 0
+                  child: Column(
+                    children: [
+                      seller.reviewsLink.reviewsCount == 0
                           ? const Center()
-                            : Padding(
-                                padding: EdgeInsets.fromLTRB(width * 0.1,
-                                    height * 0.03, width * 0.1, height * 0.03),
-                                child: RatingSummary(
-                                  counter: counter,
-                                  average: average,
-                                  showAverage: true,
-                                  counterFiveStars: fiveStars,
-                                  counterFourStars: fourStars,
-                                  counterThreeStars: threeStars,
-                                  counterTwoStars: twoStars,
-                                  counterOneStars: oneStars,
-                                ),
+                          : Padding(
+                              padding: EdgeInsets.fromLTRB(width * 0.1,
+                                  height * 0.03, width * 0.1, height * 0.03),
+                              child: RatingSummary(
+                                counter: counter,
+                                average: average,
+                                showAverage: true,
+                                counterFiveStars: fiveStars,
+                                counterFourStars: fourStars,
+                                counterThreeStars: threeStars,
+                                counterTwoStars: twoStars,
+                                counterOneStars: oneStars,
                               ),
-                        Expanded(
-                            child: Container(
-                          decoration: BoxDecoration(
-                              border: Border(
-                                  top: BorderSide(
-                                      color: seller.reviewsLink.reviewsCount == 0
-                                          ? Colors.white
-                                          : Colors.grey,
-                                      width: 1))),
-                          child: Column(
-                            children: [
+                            ),
+                      Expanded(
+                          child: Container(
+                        decoration: BoxDecoration(
+                            border: Border(
+                                top: BorderSide(
+                                    color: seller.reviewsLink.reviewsCount == 0
+                                        ? Colors.white
+                                        : Colors.grey,
+                                    width: 1))),
+                        child: Column(
+                          children: [
                             const Align(
-                                alignment: Alignment.topLeft,
+                              alignment: Alignment.topLeft,
                               child: Padding(
-                                  padding: EdgeInsets.fromLTRB(8, 10, 8, 0),
-                                  child: Text(
-                                    "Recent Reviews",
-                                    style: TextStyle(
-                                        color: Colors.grey,
-                                        fontWeight: FontWeight.w400),
-                                  ),
+                                padding: EdgeInsets.fromLTRB(8, 10, 8, 0),
+                                child: Text(
+                                  "Recent Reviews",
+                                  style: TextStyle(
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.w400),
                                 ),
                               ),
-                              SizedBox(
-                                height: height * 0.015,
-                              ),
-                              reviewsList.isEmpty
-                                  ? Center(
-                                      child: Container(
-                                        width: width * 0.7,
-                                        height: height * 0.3,
+                            ),
+                            SizedBox(
+                              height: height * 0.015,
+                            ),
+                            reviewsList.isEmpty
+                                ? Center(
+                                    child: Container(
+                                      width: width * 0.7,
+                                      height: height * 0.3,
                                       decoration: const BoxDecoration(
-                                            image: DecorationImage(
-                                                fit: BoxFit.contain,
-                                                image: AssetImage(
-                                                    'assets/images/No reviews.png'))),
-                                      ),
-                                    )
-                                  : Expanded(
-                                      child: ListView.builder(
-                                          shrinkWrap: true,
-                                          itemCount: reviewsList.length,
-                                        itemBuilder:
-                                            (context, index) => Padding(
-                                                  padding: const EdgeInsets.symmetric(
-                                                        vertical: 8,
-                                                        horizontal: 10),
-                                                child: ReviewCard(
-                                                      avatar: NetworkImage(reviewerList
-                                                            .where((element) =>
-                                                                element.guid ==
-                                                                reviewsList[index]
-                                                                    .reviewerGuid)
-                                                            .first
-                                                            .profilePicture),
-                                                    title: itemList
-                                                        .where((element) =>
-                                                            element.guid ==
-                                                            reviewsList[index]
-                                                                .itemGuid)
-                                                        .first
-                                                        .title,
-                                                    date: formateDateTime(
-                                                        convertToDateTime(
-                                                            reviewsList[index]
-                                                                .postDT)),
-                                                    rating: reviewsList[index]
-                                                        .rating
-                                                        .toDouble(),
-                                                      message:
+                                          image: DecorationImage(
+                                              fit: BoxFit.contain,
+                                              image: AssetImage(
+                                                  'assets/images/No reviews.png'))),
+                                    ),
+                                  )
+                                : Expanded(
+                                    child: ListView.builder(
+                                        shrinkWrap: true,
+                                        itemCount: reviewsList.length,
+                                        itemBuilder: (context, index) =>
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 8,
+                                                      horizontal: 10),
+                                              child: ReviewCard(
+                                                  avatar: NetworkImage(
+                                                      reviewerList
+                                                          .where((element) =>
+                                                              element.guid ==
+                                                              reviewsList[index]
+                                                                  .reviewerGuid)
+                                                          .first
+                                                          .profilePicture),
+                                                  title: itemList
+                                                      .where((element) =>
+                                                          element.guid ==
                                                           reviewsList[index]
-                                                        .message,
-                                                      name: reviewerList.where((element) => element.guid == reviewsList[index].reviewerGuid).first.name,
-                                                    img: itemList.where((element) => element.guid == reviewsList[index].itemGuid).first.coverImage,
-                                                    price: itemList.where((element) => element.guid == reviewsList[index].itemGuid).first.price,
-                                                    quantity: itemList.where((element) => element.guid == reviewsList[index].itemGuid).first.quantity),
-                                              )),
-                                    )
-                            ],
-                          ),
-                        ))
-                      ],
-                    ),
+                                                              .itemGuid)
+                                                      .first
+                                                      .title,
+                                                  date: formateDateTime(
+                                                      convertToDateTime(
+                                                          reviewsList[index]
+                                                              .postDT)),
+                                                  rating: reviewsList[index]
+                                                      .rating
+                                                      .toDouble(),
+                                                  message: reviewsList[index]
+                                                      .message,
+                                                  name: reviewerList
+                                                      .where((element) => element.guid == reviewsList[index].reviewerGuid)
+                                                      .first
+                                                      .name,
+                                                  img: itemList.where((element) => element.guid == reviewsList[index].itemGuid).first.coverImage,
+                                                  price: itemList.where((element) => element.guid == reviewsList[index].itemGuid).first.price,
+                                                  quantity: itemList.where((element) => element.guid == reviewsList[index].itemGuid).first.quantity),
+                                            )),
+                                  )
+                          ],
+                        ),
+                      ))
+                    ],
+                  ),
                 ),
                 bottomNavigationBar: completedItemList.isNotEmpty
                     ? ReviewTap(

@@ -26,6 +26,10 @@ class InboxViewModel extends MultipleStreamViewModel {
         .getChatsWithConditionAsStream((chat) => chat.userGuids.contains(guid));
   }
 
+  Future<List<Item>> getItem() {
+    return _itemService.getAllItems();
+  }
+
   void navigateToChatScreen(
       String chatGuid, String receiverGuid, String itemGuid) {
     _dataPassingService.addToDataPassingList('item_guid', itemGuid);

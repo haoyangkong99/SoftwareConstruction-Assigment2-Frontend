@@ -11,12 +11,9 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 void main() async {
   try {
     WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-    Stripe.publishableKey =
-        'pk_test_51LYAgkHVnOUtb8pyRPf20dBuNZOHvphAx3YFxqrdcQJHlk0LjwdDes6vaaggVaPFkteJx36RhZdfLZYPzwkqAWOt00uMMgv6n5';
-    Stripe.instance.applySettings();
+
     FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-    await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform);
+    await Firebase.initializeApp();
     await setupLocator();
     runApp(MaterialApp(
       title: 'UTM Let Go',

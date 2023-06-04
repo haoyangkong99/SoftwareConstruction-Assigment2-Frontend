@@ -20,8 +20,26 @@ class ReviewsLink {
   factory ReviewsLink.fromMap(Map<String, dynamic> map) {
     List<dynamic>? guidJson = map['reviewsGuid'];
     List<String>? guids = guidJson!.map((e) => e.toString()).toList();
-    return ReviewsLink.complete(
-        map['averageRating'] as double, map['reviewsCount'] as int, guids);
+    int averageRating = map['averageRating'] as int;
+    int reviewsCount = map['reviewsCount'] as int;
+
+    try {
+      return ReviewsLink.complete(
+          averageRating.toDouble(), reviewsCount, guids);
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+  factory ReviewsLink.fromMapForItem(Map<String, dynamic> map) {
+    List<dynamic>? guidJson = map['reviewsGuid'];
+    List<String>? guids = guidJson!.map((e) => e.toString()).toList();
+
+    try {
+      return ReviewsLink.complete(
+          map['averageRating'], map['reviewsCount'], guids);
+    } catch (e) {
+      throw Exception(e);
+    }
   }
 
   String toJson() => json.encode(toMap());

@@ -62,16 +62,17 @@ class _InboxScreenState extends State<InboxScreen> {
               chatList = model.dataMap!['chatList'];
               userList = model.dataMap!['userList'];
               itemList = model.dataMap!['itemList'];
+
               List<String> involvedItemGuids =
                   chatList.map((e) => e.itemGuid).toList();
+              Set<String> involvedUserGuids = {};
+              chatList.forEach((element) async {
+                involvedUserGuids.addAll(element.userGuids);
+              });
               itemList = itemList
                   .where((element) => involvedItemGuids.contains(element.guid))
                   .toList();
-              Set<String> involvedUserGuids = {};
 
-              chatList.forEach((element) {
-                involvedUserGuids.addAll(element.userGuids);
-              });
               userList = userList
                   .where((element) => involvedUserGuids.contains(element.guid))
                   .toList();

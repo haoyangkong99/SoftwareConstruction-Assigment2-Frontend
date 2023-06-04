@@ -75,23 +75,23 @@ class ProfileScreen extends StatelessWidget {
                                     )
                                   ],
                                 ),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    IconButton(
-                                      icon: const Icon(Icons.credit_card,
-                                          color: kPrimaryColor),
-                                      onPressed: () =>
-                                          {model.navigateToPayment()},
-                                    ),
-                                    const Text(
-                                      'Payment Account',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.black),
-                                    )
-                                  ],
-                                ),
+                                // Column(
+                                //   mainAxisAlignment: MainAxisAlignment.center,
+                                //   children: <Widget>[
+                                //     IconButton(
+                                //       icon: const Icon(Icons.credit_card,
+                                //           color: kPrimaryColor),
+                                //       onPressed: () =>
+                                //           {model.navigateToPayment()},
+                                //     ),
+                                //     const Text(
+                                //       'Payment Account',
+                                //       style: TextStyle(
+                                //           fontWeight: FontWeight.w500,
+                                //           color: Colors.black),
+                                //     )
+                                //   ],
+                                // ),
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[

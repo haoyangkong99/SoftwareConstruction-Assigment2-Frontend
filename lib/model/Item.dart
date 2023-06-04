@@ -18,7 +18,7 @@ class Item {
       postedDT = '',
       visibility = VisibilityType.allow.name;
   List<String>? images, paymentMethods;
-  double price = 0;
+  double price = 0.0;
   int quantity = 0;
   ReviewsLink reviewsLink = ReviewsLink();
   Item();
@@ -39,7 +39,22 @@ class Item {
       this.price,
       this.quantity,
       this.reviewsLink);
-
+  Item.test(
+      this.guid,
+      this.coverImage,
+      this.category,
+      this.subcategory,
+      this.condition,
+      this.title,
+      this.description,
+      this.location,
+      this.status,
+      this.postedDT,
+      this.visibility,
+      this.images,
+      this.paymentMethods,
+      this.price,
+      this.quantity);
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'guid': guid,
@@ -84,7 +99,7 @@ class Item {
       paymentMethods,
       map['price'] as double,
       map['quantity'] as int,
-      ReviewsLink.fromMap(map['reviewsLink'] as Map<String, dynamic>),
+      ReviewsLink.fromMapForItem(map['reviewsLink'] as Map<String, dynamic>),
     );
   }
 

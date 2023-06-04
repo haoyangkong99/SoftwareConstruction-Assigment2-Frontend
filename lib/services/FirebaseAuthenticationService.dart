@@ -1,88 +1,77 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart' as http;
+import 'package:utmletgo/shared/Exception.dart';
+import 'package:utmletgo/constants/_constants.dart';
 
 class FirebaseAuthenticationService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+
   String getUID() {
-    return _auth.currentUser!.uid;
+    return currentUserUid;
   }
 
-  Future<User?> signIn(String email, String password) async {
-    User? user;
-    try {
-      UserCredential result = await _auth.signInWithEmailAndPassword(
-          email: email.trim(), password: password.trim());
-      user = result.user;
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        throw FirebaseAuthException(
-            code: 'ERROR_SIGN_IN_EMAIL_PASSWORD',
-            message: 'No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        throw FirebaseAuthException(
-            code: 'ERROR_SIGN_IN_EMAIL_PASSWORD',
-            message: 'No user found for that email.');
-      }
-    }
-    return user;
-  }
+  Future<String> signIn(String email, String password) async {
+    String url =
+        'https://softcon-assignment-2-backend.onrender.com/api/auth/login-email';
 
-  Future<UserCredential> googleSignIn() async {
-    try {
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      if (googleUser != null) {
-        // Get the Google Authentication credential
-        final GoogleSignInAuthentication googleAuth =
-            await googleUser.authentication;
-        final credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth.accessToken,
-          idToken: googleAuth.idToken,
-        );
-        // Sign in to Firebase with the Google Authentication credential
-        final UserCredential userCredential =
-            await _auth.signInWithCredential(credential);
-        return userCredential;
-      } else {
-        throw FirebaseAuthException(
-          code: 'ERROR_ABORTED_BY_USER',
-          message: 'Sign in aborted by user',
-        );
-      }
-    } on FirebaseAuthException catch (e) {
+    Map<String, String> body = {"email": email, "password": password};
+
+    final response =
+        await http.post(Uri.parse(url), body: jsonEncode(body), headers: {
+      "Accept": "application/json",
+      "content-type": "application/json",
+    });
+    final jsonResponse = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      currentUserUid = jsonResponse['uid'];
+
+      return jsonResponse['uid'] as String;
+    } else {
       throw FirebaseAuthException(
-        code: 'ERROR_SIGN_IN_WITH_SOCIAL_MEDIA',
-        message: e.message,
-      );
+          code: jsonResponse['code'], message: jsonResponse['message']);
     }
   }
 
   Future<bool> signUp(String email, String password) async {
-    try {
-      await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
+    String url =
+        'https://softcon-assignment-2-backend.onrender.com/api/auth/register';
+    Map<String, String> body = {"email": email, "password": password};
+
+    final response =
+        await http.post(Uri.parse(url), body: jsonEncode(body), headers: {
+      "Accept": "application/json",
+      "content-type": "application/json",
+    });
+    final jsonResponse = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      currentUserUid = jsonResponse['uid'];
       return true;
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        throw FirebaseAuthException(
-            code: 'ERROR_SIGN_UP_EMAIL_PASSWORD',
-            message: 'The password provided is too weak');
-      } else if (e.code == 'email-already-in-use') {
-        throw FirebaseAuthException(
-            code: 'ERROR_SIGN_UP_EMAIL_PASSWORD',
-            message: 'The account already exists for that email.');
-      }
-      return false;
+    } else {
+      throw FirebaseAuthException(
+          code: jsonResponse['code'], message: jsonResponse['message']);
     }
   }
 
   Future<bool> resetPassword(String email) async {
-    try {
-      await _auth.sendPasswordResetEmail(email: email.trim());
+    String url =
+        'https://softcon-assignment-2-backend.onrender.com/api/auth/reset';
+
+    Map<String, String> body = {"email": email};
+    final response =
+        await http.post(Uri.parse(url), body: jsonEncode(body), headers: {
+      "Accept": "application/json",
+      "content-type": "application/json",
+    });
+
+    final jsonResponse = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
       return true;
-    } on FirebaseAuthException catch (e) {
+    } else {
       throw FirebaseAuthException(
-          code: 'ERROR_RESET_PASSWORD', message: e.message);
+          code: jsonResponse['code'], message: jsonResponse['message']);
     }
   }
 

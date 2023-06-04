@@ -1,12 +1,15 @@
+import 'dart:convert';
 import 'dart:io';
-
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/services.dart';
 import 'package:utmletgo/constants/_constants.dart';
 import 'package:utmletgo/model/ReviewsLink.dart';
 import 'package:utmletgo/model/User.dart';
 import 'package:utmletgo/model/StripeAccount.dart';
 import 'package:utmletgo/services/_services.dart';
+import 'package:utmletgo/shared/Exception.dart';
 import 'package:uuid/uuid.dart';
+import 'package:http/http.dart' as http;
 
 class UserService {
   FirebaseDbService dbService = FirebaseDbService();
@@ -49,17 +52,81 @@ class UserService {
         ReviewsLink(),
         List.empty());
 
-    return await dbService.addDocument(collectionPath, userID, user.toMap());
+    String endpoint =
+        'https://softcon-assignment-2-backend.onrender.com/api/user/add';
+
+    try {
+      final response = await http.post(Uri.parse(endpoint),
+          body: jsonEncode({"uid": userID, "user": user.toMap()}),
+          headers: {
+            "Accept": "application/json",
+            "content-type": "application/json",
+          });
+      final jsonResponse = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        throw auth.FirebaseException(
+            code: jsonResponse['code'],
+            message: jsonResponse['message'],
+            plugin: '');
+      }
+    } catch (e) {
+      throw GeneralException(
+          title: "Error occured when adding user", message: e.toString());
+    }
   }
 
   Future<bool> updateUserByDocumentId(User user, String documentId) async {
-    return await dbService.updateDocumentByDocumentId(
-        collectionPath, documentId, user.toMap());
+    String endpoint =
+        'https://softcon-assignment-2-backend.onrender.com/api/user/update-by-docId';
+
+    try {
+      final response = await http.put(Uri.parse(endpoint),
+          body: jsonEncode({'docId': documentId, 'user': user.toMap()}),
+          headers: {
+            "Accept": "application/json",
+            "content-type": "application/json",
+          });
+      final jsonResponse = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        throw auth.FirebaseException(
+            code: jsonResponse['code'],
+            message: jsonResponse['message'],
+            plugin: '');
+      }
+    } catch (e) {
+      throw GeneralException(
+          title: "Error occured when updating user", message: e.toString());
+    }
   }
 
   Future<bool> updateUserByGuid(User user, String guid) async {
-    return await dbService.updateDocumentByGuid(
-        collectionPath, guid, user.toMap());
+    String endpoint =
+        'https://softcon-assignment-2-backend.onrender.com/api/user/update-by-guid';
+
+    try {
+      final response = await http.put(Uri.parse(endpoint),
+          body: jsonEncode({'guid': guid, 'user': user.toMap()}),
+          headers: {
+            "Accept": "application/json",
+            "content-type": "application/json",
+          });
+      final jsonResponse = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        throw auth.FirebaseException(
+            code: jsonResponse['code'],
+            message: jsonResponse['message'],
+            plugin: '');
+      }
+    } catch (e) {
+      throw GeneralException(
+          title: "Error occured when updating user", message: e.toString());
+    }
   }
 
   Future<bool> deleteUserByDocumentId(String documentId) async {
@@ -70,9 +137,23 @@ class UserService {
     return await dbService.deleteDocumentByGuid(collectionPath, guid);
   }
 
-  Future<List<User>> getAllUsers() {
-    return dbService.readAllDocument(collectionPath).then((value) =>
-        value.docs.map((user) => User.fromMap(user.data())).toList());
+  Future<List<User>> getAllUsers() async {
+    String url =
+        'https://softcon-assignment-2-backend.onrender.com/api/user/get-all';
+    try {
+      final response = await http.get(Uri.parse(url));
+      final jsonResponse = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        List<dynamic> userList = jsonResponse['user'];
+        return userList.map((e) => User.fromMap(e)).toList();
+      } else {
+        throw GeneralException(
+            title: jsonResponse['code'], message: jsonResponse['message']);
+      }
+    } catch (e) {
+      throw GeneralException(
+          title: "Error occured when getting record", message: e.toString());
+    }
   }
 
   Future<bool> validateDocumentExist(String documentId) {
@@ -81,18 +162,41 @@ class UserService {
         .then((value) => value.exists);
   }
 
-  Future<User> getUserByDocumentId(String documentId) {
-    return dbService.readByDocumentId(collectionPath, documentId).then((value) {
-      return User.fromMap(value.data());
-    });
+  Future<User> getUserByDocumentId(String documentId) async {
+    String url =
+        'https://softcon-assignment-2-backend.onrender.com/api/user/get-by-docId/${documentId}';
+    try {
+      final response = await http.get(Uri.parse(url));
+      final jsonResponse = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return User.fromMap(jsonResponse['user']);
+      } else {
+        throw GeneralException(
+            title: jsonResponse['code'], message: jsonResponse['message']);
+      }
+    } catch (e) {
+      throw GeneralException(
+          title: "Error occured when getting record", message: e.toString());
+    }
   }
 
-  Future<User> getUserByGuid(String? guid) {
-    return dbService.readByGuid(collectionPath, guid!).then((value) => value
-        .docs
-        .map((user) => User.fromMap(user.data()))
-        .toList()
-        .elementAt(0));
+  Future<User> getUserByGuid(String? guid) async {
+    String url =
+        'https://softcon-assignment-2-backend.onrender.com/api/user/get-by-guid/${guid}';
+    try {
+      final response = await http.get(Uri.parse(url));
+      final jsonResponse = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        return User.fromMap(jsonResponse['user']);
+      } else {
+        throw GeneralException(
+            title: jsonResponse['code'], message: jsonResponse['message']);
+      }
+    } catch (e) {
+      throw GeneralException(
+          title: "Error occured when getting record", message: e.toString());
+    }
   }
 
   Future<String> getUserDocumentID(String? guid) {

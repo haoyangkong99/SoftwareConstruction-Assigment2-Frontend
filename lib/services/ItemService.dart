@@ -43,6 +43,7 @@ class ItemService {
         price,
         quantity,
         ReviewsLink());
+
     await dbService
         .addDocumentWithRandomDocId(collectionPath, item.toMap())
         .then((value) async {
@@ -150,14 +151,24 @@ class ItemService {
   }
 
   Stream<List<Item>> getAllItemsAsStream({bool visibility = true}) {
-    return dbService.readAllDocumentAsStream(collectionPath).map((event) =>
-        event.docs
-            .map((e) => Item.fromMap(e.data()))
-            .where((element) => visibility
+    try {
+      return dbService.readAllDocumentAsStream(collectionPath).map((event) {
+        if (event.docs.isEmpty) {
+          return [];
+        } else {
+          return event.docs.map((e) {
+            return Item.fromMap(e.data());
+          }).where((element) {
+            return visibility
                 ? element.visibility == VisibilityType.allow.name
-                : element.visibility == VisibilityType.allow.name ||
-                    element.visibility == VisibilityType.disallow.name)
-            .toList());
+                : (element.visibility == VisibilityType.allow.name ||
+                    element.visibility == VisibilityType.disallow.name);
+          }).toList();
+        }
+      });
+    } catch (e) {
+      throw Exception(e);
+    }
   }
 
   Stream<Item> getItemByDocumentIdAsStream(String documentId,
